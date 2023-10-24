@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OliCode v0</title>
+  </head>
+  <body>
+    <br /><br /><br /><br />
+    <input type="text" id="input" /><br />
+    <input type="text" disabled id="output" />
+    <button onclick="exec()" style="cursor: pointer;">Execute</button>
+    <p>
+      <br /><br /><br /><br /><br /><br /><br /><br /><br />
+      Hello everyone!<br />
+      So I made my own programming language<br />
+      I call it <i>OliCode</i><br />
+      Here's the documentation<br /><br /><br />
+      This is a language based upon memory manupulation.<br />
+      You have 50 values in memory that can be manipulated by incrementing and
+      decrementing a pointer.<br />
+      There are several commands that you can use.<br />
+      All of them are separated by spaces (space bar).<br /><br /><br />
+      Increment a value in memory by an amount<br />
+      To do this, write "a" followed by the amount you want to increment.<br />
+      a10<br />
+      That increments the current memory value by 10.<br />
+      a5 a2<br />
+      That increments the current memory value by 5 and then 2, ending up with 7
+      as the value.<br /><br /><br />
+      Decrement a value in memory by an amount<br />
+      To do this, write "s" followed by the amount you want to decrement.<br />
+      s10<br />
+      That decrements the current memory value by 10.<br />
+      s5 s2<br />
+      That decrements the current memory value by 5 and then 2, ending up with
+      -7 as the value.<br />
+      Yes, you can have negative integers in memory values.<br />
+      Only integers though. No decimals.<br /><br /><br />
+      For the pointer values, let's visualize it.
+    </p>
+    <pre>
+        [0][0][0][0][0][0]...
+        ^
+      </pre
+    >
+    <p>
+      That shows the pointer at memory value 0.<br />
+      p1<br />
+      That moved the pointer one value to the right.<br />
+      p-1<br />
+      That moved the pointer one value to the left.<br />
+      Real simple.<br />
+      If you want to move to a specific memory value, do the following.<br />
+      f5<br />
+      That moved the pointer to memory value 5.<br />
+      Remember that memory values start at 0, so memory value 5 is really the
+      sixth memory value.<br /><br /><br />
+      Loops are quite fun<br />
+      When the memory pointer is in a loop, it will only break out once the
+      memory value at the end of the loop is 0.<br />
+      a5 l s1 e<br />
+      That l is a lowercase L, not a capital i.<br />
+      l will start the loop and e will end it.<br />
+      When the program reaches e and the current memory value is not 0, it will
+      go back to l.<br />
+      That's that.<br /><br /><br />
+      Printint to the console is quite easy.<br />
+      w<br />
+      That was it.<br />
+      So simple.<br />
+      It uses ASCII character codes, so printing 72 will not print 72.<br />
+      a72 w<br />
+      It will print H.<br /><br /><br />
+      That's about it.<br />
+      Have fun!
+    </p>
+    <script>
+      var input = document.getElementById("input");
+      var output = document.getElementById("output");
+      function exec() {
+        var intIter = 1;
+        var collnum = "";
+        var mulneg = 1;
+        var bytes = new Array(50).fill(0);
+        var pointer = 0;
+        var inloop = 0;
+        for (i = 0; i < input.value.length; i++) {
+          switch (input.value[i]) {
+            case "a":
+              while (!isNaN(parseInt(input.value[i + intIter]))) {
+                collnum = collnum + input.value[i + intIter].toString();
+                intIter++;
+              }
+              bytes[pointer] += parseInt(collnum);
+              collnum = "";
+              i += intIter;
+              intIter = 1;
+              break;
+
+            case "s":
+              while (!isNaN(parseInt(input.value[i + intIter]))) {
+                collnum = collnum + input.value[i + intIter].toString();
+                intIter++;
+              }
+              bytes[pointer] -= parseInt(collnum);
+              collnum = "";
+              i += intIter;
+              intIter = 1;
+              break;
+            case " ":
+              break;
+            case "p":
+              if (input.value[i + intIter] == "-") {
+                mulneg = -1;
+                intIter++;
+              }
+              while (!isNaN(parseInt(input.value[i + intIter]))) {
+                collnum = collnum + input.value[i + intIter].toString();
+                intIter++;
+              }
+              pointer += parseInt(collnum) * mulneg;
+              mulneg = 1;
+              collnum = "";
+              i += intIter;
+              intIter = 1;
+              break;
+            case "f":
+              while (!isNaN(parseInt(input.value[i + intIter]))) {
+                collnum = collnum + input.value[i + intIter].toString();
+                intIter++;
+              }
+              pointer = parseInt(collnum) * mulneg;
+              mulneg = 1;
+              collnum = "";
+              i += intIter;
+              intIter = 1;
+              break;
+            case "w":
+              output.value += String.fromCharCode(bytes[pointer]);
+              break;
+            case "l":
+              inloop++;
+              break;
+            case "e":
+              if (inloop > 0) {
+                if (bytes[pointer] == 0) {
+                  inloop -= 1;
+                } else {
+                  for (let e = 0; input.value[i] != "l"; e++) {
+                    i--;
+                  }
+                }
+              }
+              break;
+            case "#":
+              alert(
+                "Position " + pointer + " in array, value is " + bytes[pointer]
+              );
+              break;
+          }
+        }
+        // document.write(bytes[pointer]);
+      }
+    </script>
+  </body>
+</html>
